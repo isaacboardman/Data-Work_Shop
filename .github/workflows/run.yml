@@ -11,24 +11,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/osgeo/gdal
     permissions:
       contents: write
-    name: main
+    name: download and save data
     steps:
-      - run: apt-get update
-
-      - run: apt-get install -y git
-
       - uses: actions/checkout@v3
 
-      - run: sh ./run.sh
+      - uses: actions/setup-python@v4
 
-      - run: ls
+      - run: pip install requests
 
-      # prevents fatal: detected dubious ownership in repository at '/__w/ogr2ogr/ogr2ogr'
-      - run: git config --global --add safe.directory /__w/Data-Work_Shop/Data-Work_Shop
+      - run: pip install h3 --pre # get latest version of h3
+
+      - run: python3 run.py
+
+      - run: git config --global --add safe.directory /__w/Dataworkshop/Dataworkshop
+
 
       # Commit all changed files back to the repository
       - uses: stefanzweifel/git-auto-commit-action@v5
